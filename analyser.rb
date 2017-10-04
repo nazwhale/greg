@@ -1,30 +1,21 @@
-require_relative 'row'
-require 'smarter_csv'
+require_relative 'parser'
 
 class Analyser
 
   def initialize
-    @data = make_data_objects(parse_csv)
-  end
-
-  def parse_csv
-    SmarterCSV.process('./day.csv')
-  end
-  
-  def make_data_objects(parsed_csv)
-    data_objects = []
-    parsed_csv.each do |row|
-      data_objects << Row.new(row[:instant], row[:dteday], row[:season], row[:yr], row[:mnth], row[:holiday], row[:weekday], row[:workingday], row[:weathersit], row[:temp], row[:atemp], row[:hum], row[:windspeed], row[:casual], row[:registered], row[:cnt])
-    end
-    data_objects
+    parser = Parser.new('./day.csv')
+    @data = parser.make_data_objects
   end
 
   def get_day(day_index)
     chosen_day_data = []
     @data.each do |row|
-      chosen_day_data << row if row.weekday == day_index
+      if row.weekday == day_index
+        chosen_day_data << row
+      end
     end
-    puts chosen_day_data
+    puts chosen_day_data[0].weekday
+    puts chosen_day_data[0].windspeed
     chosen_day_data
   end
 
